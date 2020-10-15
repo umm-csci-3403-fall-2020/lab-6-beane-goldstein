@@ -18,6 +18,39 @@ public class EchoClient {
 		InputStream socketInputStream = socket.getInputStream();
 		OutputStream socketOutputStream = socket.getOutputStream();
 
-		// Put your code here.
+		OutputWriter writer = new OutputWriter(socketOutputStream);
+		InputReader reader = new InputReader(socketInputStream);
+
+		Thread writeThread = new Thread(writer);
+		Thread readThread = new Thread(reader);
+
 	}
+
+	public class OutputWriter implements Runnable{
+		OutputStream output;
+		Socket sock;
+		public OutputWriter(OutputStream output){
+
+		}
+
+		@Override
+		public void run() {
+
+		}
+	}
+
+	public class InputReader implements Runnable{
+		InputStream input;
+		Socket sock;
+
+		public InputReader(InputStream input){
+
+		}
+
+		@Override
+		public void run() {
+
+		}
+	}
+
 }
