@@ -15,11 +15,9 @@ public class EchoClient {
 
 	private void start() throws IOException {
 		Socket socket = new Socket("localhost", PORT_NUMBER);
-		InputStream socketInputStream = socket.getInputStream();
-		OutputStream socketOutputStream = socket.getOutputStream();
 
-		OutputWriter writer = new OutputWriter(socketOutputStream);
-		InputReader reader = new InputReader(socketInputStream);
+		OutputWriter writer = new OutputWriter(socket);
+		InputReader reader = new InputReader(socket);
 
 		Thread writeThread = new Thread(writer);
 		Thread readThread = new Thread(reader);
@@ -28,28 +26,37 @@ public class EchoClient {
 
 	public class OutputWriter implements Runnable{
 		OutputStream output;
-		Socket sock;
-		public OutputWriter(OutputStream output){
-
+		Socket outputSock;
+		public OutputWriter(Socket sock) throws IOException{
+			outputSock = sock;
+			output = outputSock.getOutputStream();
 		}
 
 		@Override
 		public void run() {
+			try {
 
+			}catch (IOException ioe){
+				System.out.println("Caught an unexpected exception.");
+			}
 		}
 	}
 
 	public class InputReader implements Runnable{
 		InputStream input;
-		Socket sock;
-
-		public InputReader(InputStream input){
-
+		Socket inputSock;
+		public InputReader(Socket sock) throws IOException{
+			inputSock = sock;
+			input = inputSock.getInputStream();
 		}
 
 		@Override
 		public void run() {
+			try	{
 
+			}catch (IOException ioe){
+				System.out.println("Caught and unexpected exception.");
+			}
 		}
 	}
 
