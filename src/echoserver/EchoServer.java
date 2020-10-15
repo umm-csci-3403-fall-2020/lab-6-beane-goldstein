@@ -6,6 +6,8 @@ import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import jdk.internal.util.xml.impl.Input;
+
 public class EchoServer {
 	
 	
@@ -36,17 +38,19 @@ public class EchoServer {
 	public class ConnectionRunnable implements Runnable {
 		
 		private Socket socket;
+		private InputStream byteInputStream;
+		private OutputStream byteOutputStream;
 
 
 		public ConnectionRunnable(Socket sock) {
 			socket = sock;
+			byteInputStream = socket.getInputStream();
+			byteOutputStream = socket.getOutputStream();
 		}
 
 		@Override
 		public void run() {
 			int inputByte;
-			InputStream byteInputStream = socket.getInputStream();
-			OutputStream byteOutputStream = socket.getOutputStream();
 
 			while (true) {
 				inputByte = byteInputStream.read(); //gives -1 if there's nothing left to read
@@ -56,7 +60,8 @@ public class EchoServer {
 					break;
 				}
 			}
-			socket.close();
+			socket.shutdownOutput();
 
+		}
 	}
 }
