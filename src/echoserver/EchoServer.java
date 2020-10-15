@@ -6,8 +6,6 @@ import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import jdk.internal.util.xml.impl.Input;
-
 public class EchoServer {
 	
 	
@@ -22,9 +20,14 @@ public class EchoServer {
 		while (true) {
 			Socket client = serverSocket.accept();
 
-			ConnectionRunnable clientConnection = new ConnectionRunnable(client);
-			Thread clientThread = new Thread(clientConnection);
-			clientThread.start();
+			try {
+				ConnectionRunnable clientConnection = new ConnectionRunnable(client);
+				Thread clientThread = new Thread(clientConnection);
+				clientThread.start();
+			} catch (IOException ioe) {
+				System.out.println("We caught an unexpected exception while creating the thread");
+				System.err.println(ioe);
+			}
 
 			// Put your code here.
 			// This should do very little, essentially:
@@ -42,7 +45,7 @@ public class EchoServer {
 		private OutputStream byteOutputStream;
 
 
-		public ConnectionRunnable(Socket sock) {
+		public ConnectionRunnable(Socket sock) throws IOException {
 			socket = sock;
 			byteInputStream = socket.getInputStream();
 			byteOutputStream = socket.getOutputStream();
@@ -52,15 +55,21 @@ public class EchoServer {
 		public void run() {
 			int inputByte;
 
-			while (true) {
-				inputByte = byteInputStream.read(); //gives -1 if there's nothing left to read
-				if (inputByte != -1){
-					byteOutputStream.write(inputByte);
-				} else {
-					break;
+			try { 
+				while (true) {
+					inputByte = byteInputStream.read(); //gives -1 if there's nothing left to read
+					if (inputByte != -1){
+						byteOutputStream.write(inputByte);
+					} else {
+						break;
+					}
 				}
+				socket.shutdownOutput();
+			} catch (IOException ioe) {
+				System.out.println("We caught an unhandled exception while running the thread");
+				System.err.println(ioe);
 			}
-			socket.shutdownOutput();
+
 
 		}
 	}
