@@ -21,6 +21,8 @@ public class EchoClient {
 
 		Thread writeThread = new Thread(writer);
 		Thread readThread = new Thread(reader);
+		writeThread.start();
+		readThread.start();
 
 	}
 
