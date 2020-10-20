@@ -63,10 +63,11 @@ public class EchoClient {
 		public void run() {
 			int output;
 			try	{
-				while ((output = System.in.read()) != -1) {
-					System.out.write(input.read()); //what should be sent back to the client
+				while ((output = input.read()) != -1) {
+					System.out.write(output); //what should be sent back to the client
 
 				}
+				System.out.flush();
 				inputSock.close();
 
 			}catch (IOException ioe){
