@@ -24,17 +24,24 @@ public class EchoClient {
 
 	}
 
-	public class OutputWriter implements Runnable{
+	public class InputReader implements Runnable{
 		OutputStream output;
 		Socket outputSock;
-		public OutputWriter(Socket sock) throws IOException{
+		public InputReader(Socket sock) throws IOException{
 			outputSock = sock;
 			output = outputSock.getOutputStream();
 		}
 
 		@Override
 		public void run() {
+			int input;
 			try {
+				while ((input = System.in.read()) != -1){ //while go until it hits -1 or basically null
+					//writing work
+					output.write(input); //writes the data to be sent to the server
+				}
+				output.flush(); //flushes the stream and forces bytes to written out
+				outputSock.shutdownOutput();
 
 			}catch (IOException ioe){
 				System.out.println("Caught an unexpected exception.");
@@ -42,20 +49,26 @@ public class EchoClient {
 		}
 	}
 
-	public class InputReader implements Runnable{
+	public class OutputWriter implements Runnable{
 		InputStream input;
 		Socket inputSock;
-		public InputReader(Socket sock) throws IOException{
+		public OutputWriter(Socket sock) throws IOException{
 			inputSock = sock;
 			input = inputSock.getInputStream();
 		}
 
 		@Override
 		public void run() {
+			int output;
 			try	{
+				while ((output = System.in.read()) != -1) {
+					System.out.write(input.read()); //what should be sent back to the client
+
+				}
+				inputSock.close();
 
 			}catch (IOException ioe){
-				System.out.println("Caught and unexpected exception.");
+				System.out.println("Caught an unexpected exception.");
 			}
 		}
 	}
